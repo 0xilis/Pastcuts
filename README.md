@@ -19,12 +19,13 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 - Perhaps an option to change action names to future names? No affect on the action at all but hey some people may be a fan of that ig.
 - On iOS 13, replace iOS 14's Open Shortcut action with opening the shortcut via a URL scheme
 - Move away from using Cephei for preferences
+- Mimic iOS 16.2's Get Wallpaper action
 
 ### Refs may be helpful in future:
 
-List by atnbueno: https://cdn.discordapp.com/attachments/491381450306748426/983409287768469534/ios_shortcut_actions.xlsx
-https://www.reddit.com/r/shortcuts/comments/pxrby9/new_actions_and_parameters_in_ios_15_and_macos/
-https://www.reddit.com/r/shortcuts/comments/tg9k6n/action_and_parameter_changes_in_ios_154_and_macos/
-https://www.reddit.com/r/shortcuts/comments/v6r57z/ios_16_beta_1_new_actions_and_parameters_in_ios/
+- List by atnbueno: https://cdn.discordapp.com/attachments/491381450306748426/983409287768469534/ios_shortcut_actions.xlsx
+- https://www.reddit.com/r/shortcuts/comments/pxrby9/new_actions_and_parameters_in_ios_15_and_macos/
+- https://www.reddit.com/r/shortcuts/comments/tg9k6n/action_and_parameter_changes_in_ios_154_and_macos/
+- https://www.reddit.com/r/shortcuts/comments/v6r57z/ios_16_beta_1_new_actions_and_parameters_in_ios/
 
 (Thanks flower for Pastcuts 1.2.2+ icon)
