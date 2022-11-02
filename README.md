@@ -10,6 +10,13 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 - is.workflow.actions.file.select -> is.workflow.actions.documentpicker.open with WFShowFilePicker on
 - If WFGetFilePath in is.workflow.actions.documentpicker.open and WFShowFilePicker not true, set WFShowFilePicker to false
 
+# Here but not yet in release version:
+
+- hook WFGalleryShortcut to fix not working for gallery shortcuts
+- add force importing (unrecommended, only enable if absolutely needed)
+- optimized some code
+- default spoofed version updated from 15.4 to 16.1
+
 # Things needed to be changed:
 
 - Improve code
