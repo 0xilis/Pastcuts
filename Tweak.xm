@@ -113,6 +113,80 @@ HBPreferences *preferences;
 }
 %end
 
+%hook WFGalleryShortcut
+-(id)workflowRecord {
+    id rettype = %orig;
+    [rettype setMinimumClientVersion:@"1"];
+    NSArray *origShortcutActions = [rettype actions];
+    NSMutableArray *newMutableShortcutActions = [origShortcutActions mutableCopy];
+    int shortcutActionsObjectIndex = 0;
+    
+    for (id shortcutActionsObject in origShortcutActions) {
+        if ([shortcutActionsObject isKindOfClass:[NSDictionary class]]){
+            if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.returntohomescreen"]) {
+	//in iOS 15, there's a native return to homescreen action. pre-iOS 15 you could use open app for SpringBoard instead, so we're doing that
+            NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
+    
+            [mutableShortcutActionsObject setValue:@"is.workflow.actions.openapp" forKey:@"WFWorkflowActionIdentifier"];
+	    //remember to add a grouping identifier to the action if needed
+            NSDictionary *actionparameters = [[NSDictionary alloc] initWithObjectsAndKeys:@"com.apple.springboard", @"WFAppIdentifier", nil];
+            [mutableShortcutActionsObject setValue:actionparameters forKey:@"WFWorkflowActionParameters"];
+    
+            NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
+            newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
+            } else if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.output"]) {
+            NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
+
+            [mutableShortcutActionsObject setValue:@"is.workflow.actions.exit" forKey:@"WFWorkflowActionIdentifier"];
+            if ([[[[[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFOutput"] objectForKey:@"Value"] objectForKey:@"attachmentsByRange"] objectForKey:@"{0, 1}"]) {
+	//in iOS 15, if an Exit action has output it's converted into the Output action, so we convert it back
+
+            NSDictionary *actionParametersWFResult = [[NSDictionary alloc] initWithObjectsAndKeys:@"placeholder", @"Value", @"WFTextTokenAttachment", @"WFSerializationType", nil];
+            NSMutableDictionary *mutableActionParametersWFResult = [actionParametersWFResult mutableCopy];
+            [mutableActionParametersWFResult setValue:[[[[[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFOutput"] objectForKey:@"Value"] objectForKey:@"attachmentsByRange"] objectForKey:@"{0, 1}"] forKey:@"Value"];
+            NSDictionary *actionParameters = [[NSDictionary alloc] initWithObjectsAndKeys:@"placeholder", @"WFResult", nil];
+            NSMutableDictionary *mutableActionParameters = [actionParameters mutableCopy];
+            [mutableActionParameters setValue:mutableActionParametersWFResult forKey:@"WFResult"];
+            [mutableShortcutActionsObject setValue:mutableActionParameters forKey:@"WFWorkflowActionParameters"];
+            }
+            NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
+            newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
+            } else if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.file.select"]) {
+	//in iOS 15, Get File with WFShowFilePicker is turned into Select File, so we convert it back
+            NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
+
+            [mutableShortcutActionsObject setValue:@"is.workflow.actions.documentpicker.open" forKey:@"WFWorkflowActionIdentifier"];
+            NSMutableDictionary *mutableActionParameters = [[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] mutableCopy];
+            BOOL yesvalue = YES;
+            [mutableActionParameters setValue:[NSNumber numberWithBool:yesvalue] forKey:@"WFShowFilePicker"];
+            [mutableShortcutActionsObject setValue:mutableActionParameters forKey:@"WFWorkflowActionParameters"];
+
+            NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
+            newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
+            } else if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.documentpicker.open"] && [[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFGetFilePath"] && (!([[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFShowFilePicker"]))) {
+	//in iOS 15, a new Get File action doesn't initially use WFShowFilePicker, so if WFGetFilePath is there and WFShowFilePicker we set it to false
+            NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
+
+            NSMutableDictionary *mutableActionParameters = [[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] mutableCopy];
+            BOOL novalue = NO;
+            [mutableActionParameters setObject:[NSNumber numberWithBool:novalue] forKey:@"WFShowFilePicker"];
+            [mutableShortcutActionsObject setObject:mutableActionParameters forKey:@"WFWorkflowActionParameters"];
+
+            NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
+            newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
+            }
+        }
+        shortcutActionsObjectIndex++;
+    }
+    
+    shortcutActionsObjectIndex = 0;
+
+    [rettype setActions:newMutableShortcutActions];
+    return rettype;
+}
+%end
+
+%group pastcutsVersionSpoofing
 %hook WFDevice
 -(id)systemVersion {
     if ([preferences boolForKey:@"isEnableVersionSpoofing"]) {
@@ -122,11 +196,32 @@ HBPreferences *preferences;
 	    return [preferences objectForKey:@"versionToSpoof"];
 	}
     } else {
-        return [[UIDevice currentDevice] systemVersion];
+        return %orig;
     }
 }
+%end
+%end
+
+%group pastcutsModernActionNames
+//finish latr
+%end
+
+//Remember to add a not recommended alert due to force importing hooking every shortcut loaded, bad for performance and potentially may cause unintended effects
+%group pastcutsForceImport
+%hook WFWorkflowRecord
+-(void)setMinimumClientVersion:(NSString *)arg1 {
+    if ([preferences boolForKey:@"isEnableForceImport"]) {
+	%orig(@"1");
+    } else {
+        %orig(arg1);
+    }
+}
+%end
 %end
 
 %ctor {
   preferences = [[HBPreferences alloc] initWithIdentifier:@"cum.0xilis.pastcutsprefs"];
+  if ([preferences boolForKey:@"isEnableVersionSpoofing"]) %init(pastcutsVersionSpoofing);
+  if ([preferences boolForKey:@"isEnableModernActionNames"]) %init(pastcutsModernActionNames);
+  if ([preferences boolForKey:@"isEnableForceImport"]) %init(pastcutsForceImport);
 }
