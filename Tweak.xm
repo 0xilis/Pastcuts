@@ -30,38 +30,36 @@ HBPreferences *preferences;
     //NSLog(@"Pastcuts HOOKING WFSharedShortcut!");
     id rettype = %orig;
     [rettype setMinimumClientVersion:@"1"];
-    id rettypeactions = [rettype actions];
     //NSLog(@"Pastcuts Actions by WFSharedShortcutshare: %@", [rettype actions]);
-    NSArray *origShortcutActions = rettypeactions;
-    NSArray *newShortcutActions = rettypeactions;
-    NSMutableArray *newMutableShortcutActions = [newShortcutActions mutableCopy];
+    NSArray *origShortcutActions = [rettype actions];
+    NSMutableArray *newMutableShortcutActions = [origShortcutActions mutableCopy];
     int shortcutActionsObjectIndex = 0;
     
     for (id shortcutActionsObject in origShortcutActions) {
         //NSLog(@"Pastcuts Array Item in %i: %@",shortcutActionsObjectIndex,shortcutActionsObject);
         if ([shortcutActionsObject isKindOfClass:[NSDictionary class]]){
             //NSLog(@"Pastcuts item is NSDictionary!");
-            if ([shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"]) {
-            if ([[shortcutActionsObject valueForKey:@"WFWorkflowActionIdentifier"] isEqual:@"is.workflow.actions.returntohomescreen"]) {
+            if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.returntohomescreen"]) {
 	//in iOS 15, there's a native return to homescreen action. pre-iOS 15 you could use open app for SpringBoard instead, so we're doing that
             NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
     
             [mutableShortcutActionsObject setValue:@"is.workflow.actions.openapp" forKey:@"WFWorkflowActionIdentifier"];
+	    //remember to add a grouping identifier to the action if needed
             NSDictionary *actionparameters = [[NSDictionary alloc] initWithObjectsAndKeys:@"com.apple.springboard", @"WFAppIdentifier", nil];
             [mutableShortcutActionsObject setValue:actionparameters forKey:@"WFWorkflowActionParameters"];
     
             NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
             newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
-            } else if ([[shortcutActionsObject valueForKey:@"WFWorkflowActionIdentifier"] isEqual:@"is.workflow.actions.output"]) {
+            } else if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.output"]) {
             NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
 
             [mutableShortcutActionsObject setValue:@"is.workflow.actions.exit" forKey:@"WFWorkflowActionIdentifier"];
-            if ([[[[[mutableShortcutActionsObject valueForKey:@"WFWorkflowActionParameters"] valueForKey:@"WFOutput"] valueForKey:@"Value"] valueForKey:@"attachmentsByRange"] valueForKey:@"{0, 1}"]) {
+            if ([[[[[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFOutput"] objectForKey:@"Value"] objectForKey:@"attachmentsByRange"] objectForKey:@"{0, 1}"]) {
 	//in iOS 15, if an Exit action has output it's converted into the Output action, so we convert it back
 
             NSDictionary *actionParametersWFResult = [[NSDictionary alloc] initWithObjectsAndKeys:@"placeholder", @"Value", @"WFTextTokenAttachment", @"WFSerializationType", nil];
             NSMutableDictionary *mutableActionParametersWFResult = [actionParametersWFResult mutableCopy];
-            [mutableActionParametersWFResult setValue:[[[[[mutableShortcutActionsObject valueForKey:@"WFWorkflowActionParameters"] valueForKey:@"WFOutput"] valueForKey:@"Value"] valueForKey:@"attachmentsByRange"] valueForKey:@"{0, 1}"] forKey:@"Value"];
+            [mutableActionParametersWFResult setValue:[[[[[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFOutput"] objectForKey:@"Value"] objectForKey:@"attachmentsByRange"] objectForKey:@"{0, 1}"] forKey:@"Value"];
             NSDictionary *actionParameters = [[NSDictionary alloc] initWithObjectsAndKeys:@"placeholder", @"WFResult", nil];
             NSMutableDictionary *mutableActionParameters = [actionParameters mutableCopy];
             [mutableActionParameters setValue:mutableActionParametersWFResult forKey:@"WFResult"];
@@ -71,24 +69,24 @@ HBPreferences *preferences;
             }
             NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
             newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
-            } else if ([[shortcutActionsObject valueForKey:@"WFWorkflowActionIdentifier"] isEqual:@"is.workflow.actions.file.select"]) {
+            } else if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.file.select"]) {
 	//in iOS 15, Get File with WFShowFilePicker is turned into Select File, so we convert it back
             NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
 
             [mutableShortcutActionsObject setValue:@"is.workflow.actions.documentpicker.open" forKey:@"WFWorkflowActionIdentifier"];
-            NSMutableDictionary *mutableActionParameters = [[mutableShortcutActionsObject valueForKey:@"WFWorkflowActionParameters"] mutableCopy];
+            NSMutableDictionary *mutableActionParameters = [[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] mutableCopy];
             BOOL yesvalue = YES;
             [mutableActionParameters setValue:[NSNumber numberWithBool:yesvalue] forKey:@"WFShowFilePicker"];
             [mutableShortcutActionsObject setValue:mutableActionParameters forKey:@"WFWorkflowActionParameters"];
 
             NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
             newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
-            } else if ([[shortcutActionsObject valueForKey:@"WFWorkflowActionIdentifier"] isEqual:@"is.workflow.actions.documentpicker.open"] && [[shortcutActionsObject valueForKey:@"WFWorkflowActionParameters"] valueForKey:@"WFGetFilePath"] && (!([[shortcutActionsObject valueForKey:@"WFWorkflowActionParameters"] valueForKey:@"WFShowFilePicker"]))) {
+            } else if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.documentpicker.open"] && [[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFGetFilePath"] && (!([[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFShowFilePicker"]))) {
 	//in iOS 15, a new Get File action doesn't initially use WFShowFilePicker, so if WFGetFilePath is there and WFShowFilePicker we set it to false
                 //NSLog(@"Pastcuts Setting WFShowFilePicker to false...");
             NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
 
-            NSMutableDictionary *mutableActionParameters = [[mutableShortcutActionsObject valueForKey:@"WFWorkflowActionParameters"] mutableCopy];
+            NSMutableDictionary *mutableActionParameters = [[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] mutableCopy];
             BOOL novalue = NO;
             //NSLog(@"Pastcuts Setting no value to parameters...");
             [mutableActionParameters setObject:[NSNumber numberWithBool:novalue] forKey:@"WFShowFilePicker"];
@@ -101,7 +99,6 @@ HBPreferences *preferences;
             NSDictionary *newShortDict = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
             newMutableShortcutActions[shortcutActionsObjectIndex] = newShortDict;
             }
-            }
         }
         //NSLog(@"Type: %@",[shortcutActionsObject class]);
         shortcutActionsObjectIndex++;
@@ -110,7 +107,6 @@ HBPreferences *preferences;
     shortcutActionsObjectIndex = 0;
 
     //NSLog(@"Pastcuts Our new actions mutable array is %@",newMutableShortcutActions);
-    rettypeactions = [[NSArray alloc] initWithArray:newMutableShortcutActions];
     [rettype setActions:newMutableShortcutActions];
     //NSLog(@"Pastcuts Finished analyzation of workflowRecord!");
     return rettype;
