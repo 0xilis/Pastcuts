@@ -16,6 +16,8 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 - add force importing (unrecommended, only enable if absolutely needed)
 - optimized some code
 - default spoofed version updated from 15.4 to 16.1
+- On iOS 13, replace iOS 14's Open Shortcut action with opening the shortcut via a URL scheme (shortcuts://open-shortcut?name=)
+- Replace iOS 16's Create Shortcut action with creating the shortcut via a URL scheme (shortcuts://create-shortcut)
 
 # Things needed to be changed:
 
@@ -24,10 +26,8 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 - For iOS 13, either convert the iOS 14 Calculate Expression to a group of actions or javascript that mimic the behavior (would work in stock but may be less reliable) - or add action using Calculate.framework (more reliable but wouldn't work in stock)
 - For iOS 13-14.2, mimic the Set Wallpaper action in a jailbroken state. Make damn sure that the input can be a wallpaper - Set Wallpaper was in iOS 13 betas but very quickly scrapped due to bad inputs causing respring loops and wasn't added back until iOS 14.3. I have test devices on iOS 13, but none on iOS 14 so not sure if my bad hacky workaround for custom shortcut actions works on iOS 14, so maybe for iOS 14.2 just play it safe and have it be a Powercuts action.
 - Perhaps an option to change action names to future names? No affect on the shortcut at all but hey some people may be a fan of that ig.
-- On iOS 13, replace iOS 14's Open Shortcut action with opening the shortcut via a URL scheme (shortcuts://open-shortcut?name=)
 - Move away from using Cephei for preferences
 - Mimic iOS 16.2's Get Wallpaper action
-- Replace iOS 16's Create Shortcut action with creating the shortcut via a URL scheme (shortcuts://create-shortcut)
 
 
 ### Refs may be helpful in future:
