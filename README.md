@@ -13,7 +13,7 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 # Here but not yet in release version:
 
 - hook WFGalleryShortcut to fix not working for gallery shortcuts
-- add force importing (unrecommended, only enable if absolutely needed)
+- add force opening (unrecommended, only enable if absolutely needed)
 - optimized some code
 - default spoofed version updated from 15.4 to 16.1
 - On iOS 13, replace iOS 14's Open Shortcut action with opening the shortcut via a URL scheme (shortcuts://open-shortcut?name=)
