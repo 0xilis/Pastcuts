@@ -108,6 +108,18 @@ HBPreferences *preferences;
 	    newMutableShortcutActions[shortcutActionsObjectIndex] = [[NSDictionary alloc]initWithDictionary:mutableShortcutActionsObject];
             }
             }
+	    //hopefully there's a better method for handling global variables than needing to loop through every action parameter, but can't think of one atm
+	    if ([shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]) {
+	    for (NSString* wfDictKey in [shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]) {
+	    if ([[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]) {
+	    for (NSString* wfParamKey in [shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]) {
+	    if ([[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Type"]isEqualToString:@"DeviceDetails"]) {
+	    //if we already created a device details action link to it, if not new one
+	    }
+	    }
+	    }
+	    }
+            }
         }
         //NSLog(@"Type: %@",[shortcutActionsObject class]);
         shortcutActionsObjectIndex++;
