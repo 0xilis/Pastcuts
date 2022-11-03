@@ -294,7 +294,15 @@ HBPreferences *preferences;
 %end
 
 %group pastcutsModernActionNames
-//finish latr
+%hook WFAction
+-(NSString*)name {
+    NSDictionary *modernNames = [[NSDictionary alloc]initWithObjectsAndKeys:@"Get What’s On Screen",@"Get What's On Screen",@"Open Reminders List",@"Show Reminders List",@"Open Directions",@"Show Directions",@"Open in Maps",@"Show in Maps",@"Open in BlindSquare",@"Show in BlindSquare",@"Open in Calendar",@"Show in Calendar",@"Add to Playing Next",@"Add to Up Next",@"Clear Playing Next",@"Clear Up Next",@"Find Giphy GIFs",@"Search Giphy",@"Follow Podcast",@"Subscribe to Podcast",@"Scan QR or Barcode",@"Scan QR or Bar Code",@"Scan QR or Barcode",@"Scan QR/Bar Code",@"Find App Store Apps",@"Search App Store",@"Find iTunes Store Items",@"Search iTunes Store",@"Find Places",@"Search Local Businesses",@"Find Podcasts",@"Search Podcasts",@"Show Web View",@"Show Web Page",@"Detect Language",@"Detect Language with Microsoft",@"Stop This Shortcut",@"Stop Shortcut",@"Get What's On Screen",@"Get On-Screen Content",@"Get Current Web Page from Safari",@"Get Current URL from Safari",@"Change Playback Destination",@"Set Playback Destination",@"Translate Text",@"Translate Text with Microsoft",@"Set Focus",@"Set Do Not Disturb",@"Get File from Folder",@"Get File",@"Stop This Shortcut",@"Exit Shortcut",@"Append to Text File",@"Append to File",@"Rotate Image/Video",@"Rotate Image",@"Open File",@"Open In...",@"Share with Apps",@"Share with Extensions",nil];
+    if ([modernNames objectForKey:name]) {
+        return [modernNames objectForKey:name];
+    }
+    return %orig;
+}
+%end
 %end
 
 //Remember to add a not recommended alert due to force opening hooking every shortcut loaded, bad for performance and potentially may cause unintended side effects
