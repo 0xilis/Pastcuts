@@ -120,11 +120,8 @@ HBPreferences *preferences;
 	    if ([getDeviceDetailsActions objectForKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]]) {
 	    NSString *actionUUID = [getDeviceDetailsActions objectForKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]];
 	    } else {
-	    srand((unsigned int)time(NULL));
-	    int randNum1 = (rand() % RAND_MAX) + 1;
-	    int randNum2 = (rand() % RAND_MAX) + 1;
-	    int randNum3 = (rand() % RAND_MAX) + 1;
-	    NSString *actionUUID = [NSString stringWithFormat:@"Pastcuts-%d-%d-%d",randNum1,randNum2,randNum3];
+	    NSUUID *uuid = [NSUUID UUID];
+	    NSString *actionUUID = [uuid UUIDString];
 	    [getDeviceDetailsActions setObject:actionUUID forKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]];
 	    [newMutableShortcutActions insertObject:[[NSDictionary alloc]initWithObjectsAndKeys:[[NSDictionary alloc]initWithObjectsAndKeys:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"],@"WFDeviceDetail",[NSString stringWithFormat:@"Pastcuts-%d-%d-%d",randNum1,randNum2,randNum3],@"UUID",nil],@"WFWorkflowActionParameters",@"is.workflow.actions.getdevicedetails",@"WFWorkflowActionIdentifier",nil] atIndex:0];
 	    //since we added an action to top, we add to shortcutActionsObjectIndex
@@ -248,11 +245,8 @@ HBPreferences *preferences;
 	    if ([getDeviceDetailsActions objectForKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]]) {
 	    NSString *actionUUID = [getDeviceDetailsActions objectForKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]];
 	    } else {
-	    srand((unsigned int)time(NULL));
-	    int randNum1 = (rand() % RAND_MAX) + 1;
-	    int randNum2 = (rand() % RAND_MAX) + 1;
-	    int randNum3 = (rand() % RAND_MAX) + 1;
-	    NSString *actionUUID = [NSString stringWithFormat:@"Pastcuts-%d-%d-%d",randNum1,randNum2,randNum3];
+	    NSUUID *uuid = [NSUUID UUID];
+	    NSString *actionUUID = [uuid UUIDString];
 	    [getDeviceDetailsActions setObject:actionUUID forKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]];
 	    [newMutableShortcutActions insertObject:[[NSDictionary alloc]initWithObjectsAndKeys:[[NSDictionary alloc]initWithObjectsAndKeys:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"],@"WFDeviceDetail",[NSString stringWithFormat:@"Pastcuts-%d-%d-%d",randNum1,randNum2,randNum3],@"UUID",nil],@"WFWorkflowActionParameters",@"is.workflow.actions.getdevicedetails",@"WFWorkflowActionIdentifier",nil] atIndex:0];
 	    //since we added an action to top, we add to shortcutActionsObjectIndex
