@@ -34,6 +34,7 @@ HBPreferences *preferences;
     NSArray *origShortcutActions = [rettype actions];
     NSMutableArray *newMutableShortcutActions = [origShortcutActions mutableCopy];
     int shortcutActionsObjectIndex = 0;
+    NSMutableDictionary *getDeviceDetailsActions = [[NSMutableDictionary alloc]init];
     
     for (id shortcutActionsObject in origShortcutActions) {
         //NSLog(@"Pastcuts Array Item in %i: %@",shortcutActionsObjectIndex,shortcutActionsObject);
@@ -110,11 +111,36 @@ HBPreferences *preferences;
             }
 	    //hopefully there's a better method for handling global variables than needing to loop through every action parameter, but can't think of one atm
 	    if ([shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]) {
-	    for (NSString* wfDictKey in [shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]) {
+	    for (NSString* wfDictKey in [[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]allKeys]) {
 	    if ([[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]) {
-	    for (NSString* wfParamKey in [shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]) {
+	    for (NSString* wfParamKey in [[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]) {
 	    if ([[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Type"]isEqualToString:@"DeviceDetails"]) {
 	    //if we already created a device details action link to it, if not new one
+	    if ([getDeviceDetailsActions objectForKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]]) {
+	    NSString *actionUUID = [getDeviceDetailsActions objectForKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]];
+	    } else {
+	    srand((unsigned int)time(NULL));
+	    int randNum1 = (rand() % RAND_MAX) + 1;
+	    int randNum2 = (rand() % RAND_MAX) + 1;
+	    int randNum3 = (rand() % RAND_MAX) + 1;
+	    NSString *actionUUID = [NSString stringWithFormat:@"Pastcuts-%d-%d-%d",randNum1,randNum2,randNum3];
+	    [getDeviceDetailsActions setObject:actionUUID forKey:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]];
+	    [newMutableShortcutActions insertObject:[[NSDictionary alloc]initWithObjectsAndKeys:[[NSDictionary alloc]initWithObjectsAndKeys:[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"],@"WFDeviceDetail",[NSString stringWithFormat:@"Pastcuts-%d-%d-%d",randNum1,randNum2,randNum3],@"UUID",nil],@"WFWorkflowActionParameters",@"is.workflow.actions.getdevicedetails",@"WFWorkflowActionIdentifier",nil] atIndex:0];
+	    //since we added an action to top, we add to shortcutActionsObjectIndex
+	    shortcutActionsObjectIndex++;
+	    }
+	    NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
+	    NSMutableDictionary *mutableActionParameters = [[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] mutableCopy];
+	    NSMutableDictionary *mutableActionParameter1 = [[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey] mutableCopy];
+	    NSMutableDictionary *mutableActionParameter2 = [[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] mutableCopy];
+	    NSMutableDictionary *mutableActionParameter3 = [[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"]objectForKey:@"attachmentsByRange"] mutableCopy];
+	    //modify [[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey];
+	    [mutableActionParameter3 setObject:[[NSDictionary alloc]initWithObjectsAndKeys:@"ActionOutput",@"Type",actionUUID,@"OutputUUID",[[[[[[[shortcutActionsObject objectForKey:@"WFWorkflowActionParameters"]objectForKey:wfDictKey]objectForKey:@"Value"] objectForKey:@"attachmentsByRange"]objectForKey:wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"],@"OutputName",nil] forKey:wfParamKey];
+	    [mutableActionParameter2 setObject:[[NSDictionary alloc]initWithDictionary:mutableActionParameter3] forKey:@"attachmentsByRange"];
+	    [mutableActionParameter1 setObject:[[NSDictionary alloc]initWithDictionary:mutableActionParameter2] forKey:@"Value"];
+	    [mutableActionParameters setObject:[[NSDictionary alloc]initWithDictionary:mutableActionParameter1] forKey:wfDictKey];
+	    [mutableShortcutActionsObject setObject:[[NSDictionary alloc]initWithDictionary:mutableActionParameters] forKey:@"WFWorkflowActionParameters"];
+	    [newMutableShortcutActions[shortcutActionsObjectIndex] = [[NSDictionary alloc]initWithDictionary:mutableShortcutActionsObject];
 	    }
 	    }
 	    }
