@@ -64,7 +64,7 @@
 			<key>placeholder</key>
 			<string>16.1</string>
 			<key>height</key>
-			<real>44</key>
+			<real>44</real>
 			<key>dynamicRule</key>
 			<string>SWITCH_ID, ==, 0</string>
 		</dict>
