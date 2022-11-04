@@ -8,19 +8,49 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>Badger</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Get Badger for $0.99 on Havoc</string>
+			<key>icon</key>
+			<string>badger@2x.png</string>
+			<key>action</key>
+			<string>buyBadger</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>Pastcuts</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>height</key>
+			<string>133</string>
+			<key>label</key>
+			<string></string>
+			<key>icon</key>
+			<string>PastcutsBanner.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
-			<true/>
+			<false/>
 			<key>defaults</key>
-			<string>cum.0xilis.pastcutsprefs</string>
+			<string>com.zachary7829.pastcutsprefs</string>
 			<key>key</key>
 			<string>isEnableVersionSpoofing</string>
 			<key>label</key>
 			<string>Enable Version Spoofing</string>
+			<key>PostNotification</key>
+			<string>com.zachary7829.pastcuts/ReloadPrefs</string>
+			<key>id</key>
+			<string>SWITCH_ID</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -28,17 +58,71 @@
 			<key>default</key>
 			<string>16.1</string>
 			<key>defaults</key>
-			<string>cum.0xilis.pastcutsprefs</string>
+			<string>com.zachary7829.pastcutsprefs</string>
 			<key>key</key>
 			<string>versionToSpoof</string>
 			<key>placeholder</key>
 			<string>16.1</string>
+			<key>height</key>
+			<real>44</key>
+			<key>dynamicRule</key>
+			<string>SWITCH_ID, ==, 0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.zachary7829.pastcutsprefs</string>
+			<key>key</key>
+			<string>isEnableModernActionNames</string>
+			<key>label</key>
+			<string>Use Modern Action Names</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ZLTCSwitchWithInfo</string>
+			<key>infoTitle</key>
+			<string>(Unrecommended) Force Opening</string>
+			<key>infoMessage</key>
+			<string>Pastcuts already makes shortcuts compatible for your iOS version upon importing. Enabling force opening forces every single shortcut to be able to be opened. This is not recommended due to it affecting every single shortcut loaded, which may produce poor performance and unintended side affects, and should only be used when needed.</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.zachary7829.pastcutsprefs</string>
+			<key>key</key>
+			<string>isEnableForceOpen</string>
+			<key>label</key>
+			<string>(Unrecommended) Enable Force Open</string>
+			<key>PostNotification</key>
+			<string>com.company.name/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Contact</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Discord</string>
+			<key>icon</key>
+			<string>discord@2x.png</string>
+			<key>action</key>
+			<string>openDiscord</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
 			<string>My GitHub</string>
+			<key>icon</key>
+			<string>github@2x.png</string>
 			<key>action</key>
 			<string>openGitHub</string>
 		</dict>
@@ -46,7 +130,19 @@
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
+			<string>My Reddit</string>
+			<key>icon</key>
+			<string>reddit@2x.png</string>
+			<key>action</key>
+			<string>openReddit</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
 			<string>My Twitter</string>
+			<key>icon</key>
+			<string>twitter.png</string>
 			<key>action</key>
 			<string>openTwitter</string>
 		</dict>
