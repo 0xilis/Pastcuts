@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ZLTCRootListController.h"
 #import "ZLTCSwitchWithInfo.h"
-//#import "NSTask.h"
 
 @implementation ZLTCRootListController
 
@@ -144,57 +143,6 @@
 	NSDictionary *operatorValues = @{ @"==" : @(XXEqualToOperatorType), @"!=" : @(XXNotEqualToOperatorType), @">" : @(XXGreaterThanOperatorType), @"<" : @(XXLessThanOperatorType) };
 	return [operatorValues[string] intValue];
 }
-
-/*-(void)enableSemiPersistence {
-	// NSTask *enPersistence = [[NSTask alloc] init];
-	// enPersistence.launchPath = @"/usr/bin/enableSemiPersistenceScript";
-	// enPersistence.arguments = @[@"ok"];
-	// [enPersistence launch];
-	pid_t pid;
-	char *argv[] = {"bash", "-c", "/usr/local/bin/enableSemiPersistenceScript", NULL};
-	posix_spawn(&pid, "/bin/bash", NULL, NULL, argv, NULL);
-	// setuid(0);
-	// setgid(0);
-	// NSMutableDictionary * wflowKitPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/System/Library/PrivateFrameworks/WorkflowKit.framework/Info.plist"];
-	// NSUserDefaults * wflowKitPlist = [[NSUserDefaults alloc] initWithSuiteName:@"/System/Library/PrivateFrameworks/WorkflowKit.framework/Info.plist"];
-	// [wflowKitPlist setValue:@"1146.11" forKey:@"CFBundleVersion"];
-	// [wflowKitPlist synchronize];
-	// [wflowKitPlist writeToFile:@"/System/Library/PrivateFrameworks/WorkflowKit.framework/Info.plist" atomically:NO];
-}
-
--(void)disableSemiPersistence {
-	// NSTask *diPersistence = [[NSTask alloc] init];
-	// diPersistence.launchPath = @"/usr/local/bin/disableSemiPersistenceScript";
-	// diPersistence.arguments = @[@"ok"];
-	// [diPersistence launch];
-	pid_t pid;
-	char *argv[] = {"bash", "-c", "/usr/local/bin/disableSemiPersistenceScript", NULL};
-	posix_spawn(&pid, "/bin/bash", NULL, NULL, argv, NULL);
-	// setuid(0);
-	// setgid(0);
-	// NSUserDefaults *wflowKitPlist = [[NSUserDefaults alloc] initWithSuiteName:@"/System/Library/PrivateFrameworks/WorkflowKit.framework/Info.plist"];
-	// NSUserDefaults *placeholderPlist = [[NSUserDefaults alloc] initWithSuiteName:@"/System/Library/AppPlaceholders/Shortcuts.app/Info.plist"];
-	// [wflowKitPlist setValue:[placeholderPlist objectForKey:@"CFBundleVersion"] forKey: @"CFBundleVersion"];
-	// [wflowKitPlist synchronize];
-}*/
-
-/*-(void)reloadShortcuts {
-	NSTask *scutreload = [[NSTask alloc] init];
-	scutreload.launchPath = @"/usr/bin/killall";
-	scutreload.arguments = @[@"siriactionsd"];
-	[scutreload launch];
-	NSTask *scutreloadnew = [[NSTask alloc] init];
-	scutreloadnew.launchPath = @"/usr/bin/killall";
-	scutreloadnew.arguments = @[@"Shortcuts"];
-	[scutreloadnew launch];
-}*/
-
-/*-(void)openPatreon {
-	[[UIApplication sharedApplication]
-	openURL:[NSURL URLWithString:@"https://www.patreon.com/zachary7829"]
-	options:@{}
-	completionHandler:nil];
-}*/
 
 -(void)openDiscord {
 	[[UIApplication sharedApplication]
