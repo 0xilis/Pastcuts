@@ -1,11 +1,11 @@
-Package: cum.0xilis.pastcuts
+Package: com.zachary7829.pastcuts
 Name: Pastcuts
 Author: Snoolie K
-Description: Import iOS 15 shortcuts on iOS 13
+Description: Import iOS 15+ shortcuts on iOS 13/14
 Icon: https://0xilis.github.io/repo/assets/PastcutsIcon.png
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader (>= 2.2.3), firmware (>= 13.0), ws.hbang.common
 Conflicts: firmware (>= 15.0)
 Maintainer: Snoolie K
 Architecture: iphoneos-arm
 Section: Tweaks
-Version: 1.2.2
+Version: 1.3.0
