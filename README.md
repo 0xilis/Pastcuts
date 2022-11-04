@@ -20,6 +20,8 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 - Replace iOS 16's Create Shortcut action with creating the shortcut via a URL scheme (shortcuts://create-shortcut)
 - Make iOS 15's Get Device Details Global Variable convert into a magic variable, add a Get Device Details action and make the magic variable link to that action
 - Modern action names
+- Improve preference bundle design
+- No noisy files
 
 # Things needed to be changed:
 
