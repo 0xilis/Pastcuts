@@ -9,19 +9,13 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 - is.workflow.actions.returntohomescreen -> is.workflow.actions.openapp to SpringBoard
 - is.workflow.actions.file.select -> is.workflow.actions.documentpicker.open with WFShowFilePicker on
 - If WFGetFilePath in is.workflow.actions.documentpicker.open and WFShowFilePicker not true, set WFShowFilePicker to false
+- com.apple.shortcuts.CreateWorkflowAction -> is.workflow.actions.openurl with shortcuts://create-shortcut
+- (iOS 13) is.workflow.actions.openworkflow -> is.workflow.actions.openurl with shortcuts://open-shortcut?name=(shortcut name)
+- Get Device Details Global Var -> magic var to Get Device Details action
 
-# Here but not yet in release version:
+# Modern Action Names
 
-- hook WFGalleryShortcut to fix not working for gallery shortcuts
-- add force opening (unrecommended, only enable if absolutely needed)
-- optimized some code
-- default spoofed version updated from 15.4 to 16.1
-- On iOS 13, replace iOS 14's Open Shortcut action with opening the shortcut via a URL scheme (shortcuts://open-shortcut?name=)
-- Replace iOS 16's Create Shortcut action with creating the shortcut via a URL scheme (shortcuts://create-shortcut)
-- Make iOS 15's Get Device Details Global Variable convert into a magic variable, add a Get Device Details action and make the magic variable link to that action
-- Modern action names
-- Improve preference bundle design
-- No noisy files
+Pastcuts has the option to also enable using modern action names.
 
 # Things needed to be changed:
 
@@ -31,6 +25,9 @@ Import iOS 15+ shortcuts on 13/14, and convert some actions to iOS 13/14
 - Move away from using Cephei for preferences
 - Mimic iOS 16.2's Get Wallpaper action
 - Option to change WFColor for a more modern version, or older version
+- Translate preference bundle
+- Look into iOS 12 support
+- Have multilingual modern action names
 
 
 ### Refs may be helpful in future:
