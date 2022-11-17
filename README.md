@@ -25,9 +25,8 @@ Pastcuts has the option to also enable using modern action names.
 - Move away from using Cephei for preferences
 - Mimic iOS 16.2's Get Wallpaper action
 - Option to change WFColor for a more modern version, or older version
-- Translate preference bundle
 - Look into iOS 12 support
-- Have multilingual modern action names
+- Multilingual support (use multilingual modern action names (no translators needed for this, just use native localized strings), ask for translators for preference bundle)
 
 
 ### Refs may be helpful in future:
