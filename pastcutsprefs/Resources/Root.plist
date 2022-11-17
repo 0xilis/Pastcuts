@@ -82,13 +82,19 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Unrecommended</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>cellClass</key>
 			<string>ZLTCSwitchWithInfo</string>
 			<key>infoTitle</key>
 			<string>(Unrecommended) Force Opening</string>
 			<key>infoMessage</key>
-			<string>Pastcuts already makes shortcuts compatible for your iOS version upon importing. Enabling force opening forces every single shortcut to be able to be opened. This is not recommended due to it affecting every single shortcut loaded, which may produce poor performance and unintended side affects, and should only be used when needed.</string>
+			<string>Pastcuts already makes shortcuts compatible upon importing. Force opening is not recommended due to affecting all shortcuts loaded, which may produce poor performance and unintended side affects. Only use when needed.</string>
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
@@ -96,7 +102,7 @@
 			<key>key</key>
 			<string>isEnableForceOpen</string>
 			<key>label</key>
-			<string>(Unrecommended) Enable Force Open</string>
+			<string>Enable Force Open</string>
 			<key>PostNotification</key>
 			<string>com.company.name/ReloadPrefs</string>
 		</dict>
