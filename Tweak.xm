@@ -25,6 +25,7 @@ HBPreferences *preferences;
 -(id)workflowRecord;
 @end
 
+%group iOS13AndAbove
 %hook WFSharedShortcut
 -(id)workflowRecord {
     //NSLog(@"Pastcuts HOOKING WFSharedShortcut!");
@@ -284,6 +285,35 @@ HBPreferences *preferences;
 }
 %end
 
+//Remember to add a not recommended alert due to force opening hooking every shortcut loaded, bad for performance and potentially may cause unintended side effects
+%group pastcutsForceOpen
+%hook WFWorkflowRecord
+-(void)setMinimumClientVersion:(NSString *)arg1 {
+    %orig(@"1");
+}
+%end
+%end
+
+%end
+
+%group iOS12
+%hook WFSharedShortcut
+-(id)workflow {
+    id rettype = %orig;
+    [rettype setMinimumClientVersion:@"1"];
+    return rettype;
+}
+%end
+//Remember to add a not recommended alert due to force opening hooking every shortcut loaded, bad for performance and potentially may cause unintended side effects
+%group pastcutsForceOpen
+%hook WFWorkflow
+-(void)setMinimumClientVersion:(NSString *)arg1 {
+    %orig(@"1");
+}
+%end
+%end
+%end
+
 %group pastcutsVersionSpoofing
 %hook WFDevice
 -(id)systemVersion {
@@ -305,15 +335,6 @@ HBPreferences *preferences;
         return [modernNames objectForKey:origName];
     }
     return origName;
-}
-%end
-%end
-
-//Remember to add a not recommended alert due to force opening hooking every shortcut loaded, bad for performance and potentially may cause unintended side effects
-%group pastcutsForceOpen
-%hook WFWorkflowRecord
--(void)setMinimumClientVersion:(NSString *)arg1 {
-    %orig(@"1");
 }
 %end
 %end
