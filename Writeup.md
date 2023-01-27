@@ -140,4 +140,4 @@ This is currently what I'm working on with Pastcuts 1.4.0. Sadly I wasn't able t
 
 ### The (potential) future - potentially better hooking?
 
-iOS 15 
+Hey - why are we using WFSharedShortcut, anyway? A potentially better method is to hook the Shortcut app's openFile or openURL in the app delegate, and auto change the file to do our action modification and minimum client version patching. This should work great for iOS 13/14. Hey, what about iOS 15? Our old WFSharedShortcut is still fine and seems like it doesn't fuck up shortcuts signing, but our new method probably will. Well, as I prev mentioned, a new method has been implemented in WorkflowKit - WFShortcutExporter - this workflowkit method is going to be *awesome* for this. Hook it, and everything after the %orig you shouldn't need to worry about shortcuts signing at all anymore.
