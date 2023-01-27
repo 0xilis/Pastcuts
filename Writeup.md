@@ -9,10 +9,59 @@ With that being said, that's not saying everything I did making Pastcuts, especi
 So in this writeup, I'll explain how Pastcuts was made, the problems I made, how I first identified those problems and how I fixed them. I'm going to attempt to word this writeup so even someone with no Objective-C or Logos knowledge should *hopefully* get something out of this, but still might also help a little for those who are already experienced, though aren't aware of WorkflowKit much. 
 
 ### Creating Pastcuts 1.0
-So we need to figure out what we need to hook beforehand. Back when shortcuts were shared as unsigned .shortcut files, I remember you could pull a shortcut file (which is just a plist) and modify it to have a lower WFWorkflowMinimumClientVersion, and boom import. Even if importing has been disabled, those unsigned shortcut files are still in use behind the scenes when importing shortcuts from iCloud in iOS 13/14 (you can even call the icloud API to receive the unsigned file if you want, ex links like these https://www.icloud.com/shortcuts/8d4e206d568d4aadb624b2a6191a3771 have this API https://www.icloud.com/shortcuts/api/records/8d4e206d568d4aadb624b2a6191a3771 in which contain a link to the signed shortcut for iOS 15+ and unsigned for iOS 14-), so that value must be in use somewhere. Shortcuts on iOS 13+ differs greatly behind the scenes from iOS 12-, with a lot of it being in iOS itself rather than the app - more specifically, ContentKit.framework, ActionKit.framework, and (the most important) WorkflowKit.framework. First let's understand what we need to hook. Thankfully shortcuts has a built-in action that makes this easy for us: View Content Graph of (x). Make a shortcut to get all shortcuts, choose list action, then view content graph. Run and choose a shortcut, and View Content graph should appear. Tap on the shortcut's name, then Shortcut. We can see 5 items - WFWorkflowReference, Shortcut, WFImage, WFWorkflowRecord, and NSString. We're going to modify WFWorkflowRecord. Let's take a look at the header - https://headers.cynder.me/index.php?sdk=ios/13.7&fw=/PrivateFrameworks/WorkflowKit.framework&file=%2FHeaders%2FWFWorkflowRecord.h. Oooo, NSString *minimumClientVersion - that sounds useful! Just hook minimumClientVersion in WFWorkflowRecord, and make it return NSString of 1. Boom - You just created Pastcuts 1.0!
+So we need to figure out what we need to hook beforehand. Back when shortcuts were shared as unsigned .shortcut files, I remember you could pull a shortcut file (which is just a plist) and modify it to have a lower WFWorkflowMinimumClientVersion, and boom import. Even if importing has been disabled on iOS 13/14 (excluding iOS 14 beta 1 where it was (possibly mistakenly?) re-enabled, and disabled the next beta), those unsigned shortcut files are still in use behind the scenes when importing shortcuts from iCloud in iOS 13/14 (you can even call the icloud API to receive the unsigned file if you want, ex links like these https://www.icloud.com/shortcuts/8d4e206d568d4aadb624b2a6191a3771 have this API https://www.icloud.com/shortcuts/api/records/8d4e206d568d4aadb624b2a6191a3771 in which contain a link to the signed shortcut for iOS 15+ and unsigned for iOS 14-), so that file must be in use somewhere.
 
+
+So, what did I just say?
+
+
+Well, there are two different types of plist formats shortcuts used for .shortcut files. Those are bplists and xml plists - I'm not touching bplists since everything should carry over to xml plists (at least for what we're doing). Rename an unsigned .shortcut file to .plist, and open in a plist editor. Here's an example of a xml plist .shortcut file, with just a comment action that says chocolate (excluding some keys that are not important and we aren't touching):
+
+
+```xml
+<key>WFWorkflowClientVersion</key>
+<string>700</string>
+<key>WFWorkflowClientRelease</key>
+<string>2.0</string>
+<key>WFWorkflowMinimumClientVersion</key>
+<integer>411</integer>
+<dict>
+ <key>WFWorkflowActionIdentifier</key>
+ <string>is.workflow.actions.comment</string>
+ <key>WFWorkflowActionParameters</key>
+ <dict>
+  <key>WFCommentActionText</key>
+  <string>Chocolate</string>
+ </dict>
+</dict>
+```
+
+So in a plist editor, if you change the WFWorkflowMinimumClientVersion in the file to something like 1, you can import it on an iOS 12 device without issues! (Well, that won't say the shortcut won't have issues - iOS 13 has a lot of actions that iOS 12 doesn't so the shortcut might not work if it uses one of those, but it will still allow importing).
+
+So, how do we change that value automatically upon importing?
+
+
+Shortcuts on iOS 13+ differs greatly behind the scenes from iOS 12-, with a lot of it being in iOS itself rather than the app - more specifically, ContentKit.framework, ActionKit.framework, and (the most important) WorkflowKit.framework. First let's understand what we need to hook. Thankfully shortcuts has a built-in action that makes this easy for us: View Content Graph of (x). Make a shortcut to get all shortcuts, choose list action, then view content graph. Run and choose a shortcut, and View Content graph should appear. Tap on the shortcut's name, then Shortcut. We can see 5 items - WFWorkflowReference, Shortcut, WFImage, WFWorkflowRecord, and NSString. We're going to modify WFWorkflowRecord. Let's take a look at the header - https://headers.cynder.me/index.php?sdk=ios/13.7&fw=/PrivateFrameworks/WorkflowKit.framework&file=%2FHeaders%2FWFWorkflowRecord.h. Oooo, NSString *minimumClientVersion - that sounds useful! Just hook minimumClientVersion in WFWorkflowRecord, and make it return NSString of 1. Boom - You just created Pastcuts 1.0!
+
+
+Well, this actually honestly wasn't how I created it. Remember how I said I was a dumb kid doing random Flex 3? Yeah, admittedly that's just what I did: edit random Flex 3 stuff until I saw it worked. This is why older Pastcuts versions not only hook WFWorkflowRecord minimumClientVersion (the one thing that makes Pastcuts 1.0 word), but also WFWorkflowReference minimumClientVersion, which is unneeded, as well as some other random stuff that had methods that sounded related to importing with as isSupportedOnThisDevice, which isn't related to importing at *all* and is completely unneeded.
+
+Here's all that's needed to recreate Pastcuts 1.0:
+
+```objc
+%hook WFWorkflowRecord
+-(id)minimumClientVersion {
+  return @"1";
+}
+%end
+```
 ### Pastcuts 1.1.2+
-Okay, so, what's wrong here? Well, in 1.2 I wanted Pastcuts to convert shortcut actions when importing. I realized that my logic was bad. Why? Well, we're hooking minimumClientVersion in EVERY shortcut loaded. This might be bad for performance / battery, and while we're not doing anything that can go wrong that much, once we get to hooking actions, if we make one mistake, not just that shortcut gets affected but EVERY shortcut gets affected, so it's pretty dangerous as well. So, let's just switch to hooking (also in WorkflowKit) WFSharedShortcut's workflowRecord instead. Let's do id rettype = %orig;. Then, [rettype setMinimumClientVersion:@"1"]; to make minimumClientVersion 1 in it. Then just return rettype, and boom, now we only hook when a shortcut is imported, making us MUCH more optimized! I was planning on waiting for Pastcuts 1.2, but I decided this optimization is enough to deserve a quick 1.1.2 release.
+Okay, so, what's wrong here? Well, in 1.2 I wanted Pastcuts to convert shortcut actions when importing. I realized that my logic was bad. Why? Well, we're hooking minimumClientVersion in EVERY shortcut loaded. This might be bad for performance / battery, and while we're not doing anything that can go wrong that much, once we get to hooking actions, if we make one mistake, not just that shortcut gets affected but EVERY shortcut gets affected, so it's pretty dangerous as well.
+
+I still wasn't that experienced with RE, but I had improved by Obj-C skills a bit by this point - instead of RE, I instead just plopped in a NSLog, looked at console, and saw how many times it was called and was like, "okay, this definitely is called too much". I still didn't know RE so I just messed with random classes Flex 3 showed, and found WFSharedShortcut. After trying an NSLog with a hook *this* time, I saw that it seems to not be called when loading shortcuts, only when importing. So I decided that WFSharedShortcut was a much better option for this than WFWorkflowRecord. Current Pastcuts, 1.3.0, still actually uses WFSharedShortcut, fun fact, and some other tweaks of mine such as Safecuts, which mitigates an iOS 15.0-15.3.1 hidden action vuln also use it (although I should really switch to using WFShortcutExporter for Safecuts - it's brand new to iOS 15, and if you're doing iOS 15, it's more better suited for this type of stuff). I would still recommend doing, uh, good RE and understanding exactly how WFSharedShortcut works, but at the time this was all I knew and I guess it's better than nothing.
+
+
+So, let's just switch to hooking (also in WorkflowKit) WFSharedShortcut's workflowRecord instead. Let's do id rettype = %orig;. Then, [rettype setMinimumClientVersion:@"1"]; to make minimumClientVersion 1 in it. Then just return rettype, and boom, now we only hook when a shortcut is imported, making us MUCH more optimized! I was planning on waiting for Pastcuts 1.2, but I decided this optimization is enough to deserve a quick 1.1.2 release.
 
 ```objc
 %hook WFSharedShortcut
@@ -81,8 +130,14 @@ While in iOS 12 there is no WorkflowKit system framework, Shortcuts 2.2.2 embeds
 
 WorkflowAppKit, from what I can see does not handle gallery shortcuts, that's by Shortcuts itself which is all in swift, so adding gallery support isn't so easy. But, for what's going to matter the most, importing, is handled by WorkflowAppKit's WFSharedShortcut - hmm, where have we seen this before?
 
-It's nearly identical to how it is in WorkflowKit in iOS 13. WFWorkflowRecord however, doesn't exist yet - instead WFWorkflow is used. So, we should just be able to hook that and (hopefully) be good.
+WFSharedShortcut is nearly identical to how it is in WorkflowKit in iOS 13. WFWorkflowRecord however, doesn't exist yet - instead WFWorkflow is used. So, we should just be able to hook that and (hopefully) be good.
 
 That's not saying it'll be as neat as Pastcuts iOS 13/14 for iOS 15 shortcuts - iOS 12 to 13, unlike 14 to 15, does differ a lot in structure, with iOS 12 being more dependent on actions using input passed in from the last action, and iOS 13+ is more dependent on using the passed in magic variable of the action.
 
 Perhaps, maybe, it could be usual to convert actions that rely on that magic variable structure in iOS 13 to cycle through all params, and place the magic variables in a Get Variable action on top of the action. iOS 13 also features a lot of acitons that you may be able to easily just substitute with a Get Variable action.
+
+This is currently what I'm working on with Pastcuts 1.4.0. Sadly I wasn't able to finish for the 1 year anniversary, but I'm still trying and hoping to make Pastcuts 1.4.0 the best update it can be
+
+### The (potential) future - potentially better hooking?
+
+iOS 15 
