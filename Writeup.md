@@ -61,7 +61,7 @@ Okay, so, what's wrong here? Well, in 1.2 I wanted Pastcuts to convert shortcut 
 I still wasn't that experienced with RE, but I had improved by Obj-C skills a bit by this point - instead of RE, I instead just plopped in a NSLog, looked at console, and saw how many times it was called and was like, "okay, this definitely is called too much". I still didn't know RE so I just messed with random classes Flex 3 showed, and found WFSharedShortcut. After trying an NSLog with a hook *this* time, I saw that it seems to not be called when loading shortcuts, only when importing. So I decided that WFSharedShortcut was a much better option for this than WFWorkflowRecord. Current Pastcuts, 1.3.0, still actually uses WFSharedShortcut, fun fact, and some other tweaks of mine such as Safecuts, which mitigates an iOS 15.0-15.3.1 hidden action vuln also use it (although I should really switch to using WFShortcutExporter for Safecuts - it's brand new to iOS 15, and if you're doing iOS 15, it's more better suited for this type of stuff). I would still recommend doing, uh, good RE and understanding exactly how WFSharedShortcut works, but at the time this was all I knew and I guess it's better than nothing.
 
 
-So, let's just switch to hooking (also in WorkflowKit) WFSharedShortcut's workflowRecord instead. Let's do id rettype = %orig;. Then, [rettype setMinimumClientVersion:@"1"]; to make minimumClientVersion 1 in it. Then just return rettype, and boom, now we only hook when a shortcut is imported, making us MUCH more optimized! I was planning on waiting for Pastcuts 1.2, but I decided this optimization is enough to deserve a quick 1.1.2 release.
+So, let's just switch to hooking (also in WorkflowKit) WFSharedShortcut's workflowRecord instead. Let's do id rettype = %orig;. Then, \[rettype setMinimumClientVersion:@"1"]; to make minimumClientVersion 1 in it. Then just return rettype, and boom, now we only hook when a shortcut is imported, making us MUCH more optimized! I was planning on waiting for Pastcuts 1.2, but I decided this optimization is enough to deserve a quick 1.1.2 release.
 
 ```objc
 %hook WFSharedShortcut
@@ -77,7 +77,7 @@ Okay, so we can import all Shortcuts imported now. I missed that gallery shortcu
 
 So first off I want to thank u/gluebyte for documenting some of the backwards (in)compatibility of iOS 15. See the post here https://www.reddit.com/r/shortcuts/comments/opak23/backward_incompatibility_of_ios_15_shortcuts/. Let's start by converting the stop action back to the exit action.
 
-We need to get the actions, obv. NSArray *origShortcutActions = (NSArray *)[rettype actions];. I also create a mutable copy of the actions as newMutableShortcutActions. Then I proceed to have a for loop to loop through all the actions in origShortcutActions. Actions codewise are very similar to Shortcut's unsigned plist format, so if you're already aware of it this should be fairly easy to understand.
+We need to get the actions, obv. NSArray \*origShortcutActions = (NSArray \*)\[rettype actions];. I also create a mutable copy of the actions as newMutableShortcutActions. Then I proceed to have a for loop to loop through all the actions in origShortcutActions. Actions codewise are very similar to Shortcut's unsigned plist format, so if you're already aware of it this should be fairly easy to understand.
 
 WFWorkflowActionIdentifier is a string representing the action'd id. To check if the action is a stop action, we just check if the action in the loop's WFWorkflowActionIdentifier is equal to string is.workflow.actions.output.
 
