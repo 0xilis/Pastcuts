@@ -103,17 +103,17 @@ Here's an example of this:
       if ([[shortcutActionsObject objectForKey:@"WFWorkflowActionIdentifier"] isEqualToString:@"is.workflow.actions.output"]) {
         NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
 
-        [mutableShortcutActionsObject setValue:@"is.workflow.actions.exit" forKey:@"WFWorkflowActionIdentifier"];
+        [mutableShortcutActionsObject setObject:@"is.workflow.actions.exit" forKey:@"WFWorkflowActionIdentifier"];
         if ([[[[[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFOutput"] objectForKey:@"Value"] objectForKey:@"attachmentsByRange"] objectForKey:@"{0, 1}"]) {
     //in iOS 15, if an Exit action has output it's converted into the Output action, so we convert it back
 
           NSDictionary *actionParametersWFResult = [[NSDictionary alloc] initWithObjectsAndKeys:@"placeholder", @"Value", @"WFTextTokenAttachment", @"WFSerializationType", nil];
           NSMutableDictionary *mutableActionParametersWFResult = [actionParametersWFResult mutableCopy];
-          [mutableActionParametersWFResult setValue:[[[[[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFOutput"] objectForKey:@"Value"] objectForKey:@"attachmentsByRange"] objectForKey:@"{0, 1}"] forKey:@"Value"];
+          [mutableActionParametersWFResult setObject:[[[[[mutableShortcutActionsObject objectForKey:@"WFWorkflowActionParameters"] objectForKey:@"WFOutput"] objectForKey:@"Value"] objectForKey:@"attachmentsByRange"] objectForKey:@"{0, 1}"] forKey:@"Value"];
           NSDictionary *actionParameters = [[NSDictionary alloc] initWithObjectsAndKeys:@"placeholder", @"WFResult", nil];
           NSMutableDictionary *mutableActionParameters = [actionParameters mutableCopy];
-          [mutableActionParameters setValue:mutableActionParametersWFResult forKey:@"WFResult"];
-          [mutableShortcutActionsObject setValue:mutableActionParameters forKey:@"WFWorkflowActionParameters"];
+          [mutableActionParameters setObject:mutableActionParametersWFResult forKey:@"WFResult"];
+          [mutableShortcutActionsObject setObject:mutableActionParameters forKey:@"WFWorkflowActionParameters"];
         }
         newMutableShortcutActions[shortcutActionsObjectIndex] = [[NSDictionary alloc] initWithDictionary:mutableShortcutActionsObject];
       }
