@@ -35,5 +35,3 @@ Pastcuts has the option to also enable using modern action names.
 - https://www.reddit.com/r/shortcuts/comments/pxrby9/new_actions_and_parameters_in_ios_15_and_macos/
 - https://www.reddit.com/r/shortcuts/comments/tg9k6n/action_and_parameter_changes_in_ios_154_and_macos/
 - https://www.reddit.com/r/shortcuts/comments/v6r57z/ios_16_beta_1_new_actions_and_parameters_in_ios/
-
-(Thanks flower for Pastcuts 1.2.2+ icon)
