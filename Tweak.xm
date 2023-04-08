@@ -28,11 +28,9 @@ HBPreferences *preferences;
 %group iOS13AndAbove
 %hook WFSharedShortcut
 -(id)workflowRecord {
-  //NSLog(@"Pastcuts HOOKING WFSharedShortcut!");
-  id rettype = %orig;
-  [rettype setMinimumClientVersion:@"1"];
-  //NSLog(@"Pastcuts Actions by WFSharedShortcutshare: %@", [rettype actions]);
-  NSArray *origShortcutActions = (NSArray *)[rettype actions];
+  id workflowRecord = %orig;
+  [workflowRecord setMinimumClientVersion:@"1"];
+  NSArray *origShortcutActions = (NSArray *)[workflowRecord actions];
   NSMutableArray *newMutableShortcutActions = [origShortcutActions mutableCopy];
   int shortcutActionsObjectIndex = 0;
   NSMutableDictionary *getDeviceDetailsActions = [[NSMutableDictionary alloc]init];
@@ -115,6 +113,7 @@ HBPreferences *preferences;
               //since we added an action to top, we add to shortcutActionsObjectIndex
               shortcutActionsObjectIndex++;
             }
+	    //TODO: yes, i know this fucking sucks
             NSMutableDictionary *mutableShortcutActionsObject = [shortcutActionsObject mutableCopy];
             NSMutableDictionary *mutableActionParameters = [[workflowParameters mutableCopy];
             NSMutableDictionary *mutableActionParameter1 = [[workflowParameters objectForKey:wfDictKey] mutableCopy];
@@ -135,9 +134,9 @@ HBPreferences *preferences;
     shortcutActionsObjectIndex = 0;
 
     //NSLog(@"Pastcuts Our new actions mutable array is %@",newMutableShortcutActions);
-    [rettype setActions:newMutableShortcutActions];
+    [workflowRecord setActions:newMutableShortcutActions];
     //NSLog(@"Pastcuts Finished analyzation of workflowRecord!");
-    return rettype;
+    return workflowRecord;
 }
 %end
 
