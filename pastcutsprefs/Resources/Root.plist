@@ -42,13 +42,13 @@
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
-			<string>com.zachary7829.pastcutsprefs</string>
+			<string>cum.0xilis.pastcutsprefs</string>
 			<key>key</key>
 			<string>isEnableVersionSpoofing</string>
 			<key>label</key>
 			<string>Enable Version Spoofing</string>
 			<key>PostNotification</key>
-			<string>com.zachary7829.pastcuts/ReloadPrefs</string>
+			<string>cum.0xilis.pastcuts/ReloadPrefs</string>
 			<key>id</key>
 			<string>SWITCH_ID</string>
 		</dict>
@@ -58,7 +58,7 @@
 			<key>default</key>
 			<string>16.1</string>
 			<key>defaults</key>
-			<string>com.zachary7829.pastcutsprefs</string>
+			<string>cum.0xilis.pastcutsprefs</string>
 			<key>key</key>
 			<string>versionToSpoof</string>
 			<key>placeholder</key>
@@ -74,7 +74,7 @@
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
-			<string>com.zachary7829.pastcutsprefs</string>
+			<string>cum.0xilis.pastcutsprefs</string>
 			<key>key</key>
 			<string>isEnableModernActionNames</string>
 			<key>label</key>
@@ -98,29 +98,19 @@
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
-			<string>com.zachary7829.pastcutsprefs</string>
+			<string>cum.0xilis.pastcutsprefs</string>
 			<key>key</key>
 			<string>isEnableForceOpen</string>
 			<key>label</key>
 			<string>Enable Force Open</string>
 			<key>PostNotification</key>
-			<string>com.company.name/ReloadPrefs</string>
+			<string>cum.0xilis.pastcutsprefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Contact</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSButtonCell</string>
-			<key>label</key>
-			<string>Discord</string>
-			<key>icon</key>
-			<string>discord@2x.png</string>
-			<key>action</key>
-			<string>openDiscord</string>
 		</dict>
 		<dict>
 			<key>cell</key>
