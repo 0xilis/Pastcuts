@@ -144,13 +144,6 @@
 	return [operatorValues[string] intValue];
 }
 
--(void)openDiscord {
-	[[UIApplication sharedApplication]
-	openURL:[NSURL URLWithString:@"https://discord.gg/suFChKy6GV"]
-	options:@{}
-	completionHandler:nil];
-}
-
 -(void)openGitHub {
 	[[UIApplication sharedApplication]
 	openURL:[NSURL URLWithString:@"https://github.com/0xilis"]
