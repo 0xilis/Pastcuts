@@ -27,6 +27,7 @@ Pastcuts has the option to also enable using modern action names.
 - Option to change WFColor for a more modern version, or older version
 - Look into iOS 12 support
 - Multilingual support (use multilingual modern action names (no translators needed for this, just use native localized strings), ask for translators for preference bundle)
+- Potentially hook -(void *)initWithRecord:(void *)arg2 storageProvider:(void *)arg3 migrateIfNecessary:(bool)arg4 environment:(long long)arg5 error:(void * *)arg6 {
 
 
 ### Refs may be helpful in future:
