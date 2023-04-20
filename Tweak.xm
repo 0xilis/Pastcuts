@@ -49,7 +49,9 @@ HBPreferences *preferences;
     } else if ([identifier isEqualToString:@"is.workflow.actions.output"]) {
       NSMutableDictionary *mutableShortcutAction = [shortcutAction mutableCopy];
       mutableShortcutAction[@"WFWorkflowActionIdentifier"] = @"is.workflow.actions.exit";
-      NSDictionary *outputDictionary = mutableShortcutAction[@"WFWorkflowActionParameters"][@"WFOutput"][@"Value"][@"attachmentsByRange"][@"{0, 1}"];
+      NSDictionary *outputValueDict = workflowParameters[@"WFOutput"]? workflowParameters[@"WFOutput"][@"Value"] : nil;
+      NSDictionary *attachmentsByRangeDict = outputValueDict? outputValueDict[@"attachmentsByRange"] : nil;
+      NSDictionary *outputDictionary = attachmentsByRangeDict? attachmentsByRangeDict[@"{0, 1}"] : nil;
       
       if (outputDictionary) {
 	//in iOS 15, if an Exit action has output it's converted into the Output action, so we convert it back
@@ -71,7 +73,7 @@ HBPreferences *preferences;
      } else if ([identifier isEqualToString:@"is.workflow.actions.documentpicker.open"]) {
        NSMutableDictionary *mutableShortcutAction = [shortcutAction mutableCopy];
        //in iOS 15, a new Get File action doesn't initially use WFShowFilePicker, so if WFGetFilePath is there and WFShowFilePicker we set it to false
-       if (mutableShortcutAction[@"WFWorkflowActionParameters"][@"WFGetFilePath"] && ![mutableShortcutAction[@"WFWorkflowActionParameters"][@"WFShowFilePicker"] boolValue]) {
+       if (workflowParameters[@"WFGetFilePath"] && ![workflowParameters[@"WFShowFilePicker"] boolValue]) {
          mutableShortcutAction[@"WFWorkflowActionParameters"][@"WFShowFilePicker"] = @NO;
        }
        newMutableShortcutActions[shortcutActionIndex] = mutableShortcutAction;
@@ -86,10 +88,15 @@ HBPreferences *preferences;
         if ([identifier isEqualToString:@"is.workflow.actions.openworkflow"]) {
 	  //in iOS 14, there's a open shortcut action, so on iOS 13 we replace this with a url scheme to do same thing
           NSMutableDictionary *mutableShortcutAction = [shortcutAction mutableCopy];
-	  NSString *workflowName = mutableShortcutAction[@"WFWorkflowActionParameters"][@"workflowName"];
-	  NSString *escapedWorkflowName = [workflowName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet alphanumericCharacterSet]];
-	  mutableShortcutAction[@"WFWorkflowActionIdentifier"] = @"is.workflow.actions.openurl";
-	  mutableShortcutAction[@"WFWorkflowActionParameters"] = @{ @"WFInput": [NSString stringWithFormat:@"shortcuts://open-shortcut?name=%@", escapedWorkflowName] };
+	  NSString *workflowName = workflowParameters[@"workflowName"];
+	  if (workflowName) {
+	    NSString *escapedWorkflowName = [workflowName stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet alphanumericCharacterSet]];
+	    mutableShortcutAction[@"WFWorkflowActionIdentifier"] = @"is.workflow.actions.openurl";
+	    mutableShortcutAction[@"WFWorkflowActionParameters"] = @{ @"WFInput": [NSString stringWithFormat:@"shortcuts://open-shortcut?name=%@", escapedWorkflowName] };
+	  } else {
+	    mutableShortcutAction[@"WFWorkflowActionIdentifier"] = @"is.workflow.actions.openurl";
+	    mutableShortcutAction[@"WFWorkflowActionParameters"] = @{ @"WFInput": @"shortcuts://open-shortcut?name=PASTCUTS_ERROR" };
+	  }
 	  newMutableShortcutActions[shortcutActionIndex] = mutableShortcutAction;
         }
       }
