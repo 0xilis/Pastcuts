@@ -217,10 +217,11 @@ HBPreferences *preferences;
       //in iOS 15, there's a new device details global variable, so we cycle through all parameters of the action, and if we find it, replace it with magic var to device details action
       //hopefully there's a better method for handling global variables than needing to loop through every action parameter, but can't think of one atm
       for (NSString* wfDictKey in workflowParameters) {
-        NSDictionary *wfDictValue = workflowParameters[wfDictKey][@"Value"];
-	NSDictionary *attachmentsByRange = wfDictValue[@"attachmentsByRange"];
+        NSDictionary *wfDict = workflowParameters[wfDictKey];
+        NSDictionary *wfDictValue = [wfDict isKindOfClass:[NSDictionary class]]? wfDict[@"Value"] : nil;
+	NSDictionary *attachmentsByRange = (wfDictValue && [wfDictValue isKindOfClass:[NSDictionary class]])? wfDictValue[@"attachmentsByRange"] : nil;
         for (NSString *wfParamKey in attachmentsByRange) {
-          if ([[attachmentsByRange[wfParamKey]objectForKey:@"Type"]isEqualToString:@"DeviceDetails"]) {
+          if ([attachmentsByRange[wfParamKey][@"Type"]isEqualToString:@"DeviceDetails"]) {
             //if we already created a device details action link to it, if not new one
             NSString *actionUUID;
             if ([getDeviceDetailsActions objectForKey:[[[attachmentsByRange[wfParamKey]objectForKey:@"Aggrandizements"]firstObject]objectForKey:@"PropertyName"]]) {
